@@ -2,10 +2,10 @@
 import os, re, json, time, subprocess, urllib.request
 def sh(c): subprocess.run(c, shell=True, check=True, stdout=subprocess.DEVNULL)
 if not os.path.exists("llama.cpp/build/bin/llama-server"):
-    sh("sudo apt-get -qq update && sudo apt-get -qq install -y cmake libcurl4-openssl-dev")
-    sh("git clone -q --depth 1 https://github.com/ggml-org/llama.cpp")
-    sh("cmake -S llama.cpp -B llama.cpp/build -DLLAMA_CURL=ON -DGGML_NATIVE=OFF")
-    sh("cmake --build llama.cpp/build -j --target llama-server")
+    sh("sudo apt-get -qq update && sudo apt-get -qq install -y cmake libssl-dev")
+    sh("rm -rf llama.cpp && git clone -q --depth 1 https://github.com/ggml-org/llama.cpp")
+    sh("cmake -S llama.cpp -B llama.cpp/build -DGGML_NATIVE=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_UNITY_BUILD=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF")
+    sh("cmake --build llama.cpp/build -j2 --target llama-server")
 if not os.path.exists("cf"):
     sh("wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cf && chmod +x cf")
     sh("pip -q install huggingface_hub")
